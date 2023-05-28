@@ -53,7 +53,7 @@ class Sporki:
                 "current": game_info["gameTitle"],
                 "category": game_info["sportsCodeName"],
                 "url": game_info["broadcast"][0]["channelUrl"],
-                "id": ch_info["seq"]
+                "id": game_info["seq"]
             }
             channels.append(entity)
 
