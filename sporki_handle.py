@@ -32,6 +32,7 @@ class Sporki:
             ch_info = requests.get(url, headers=default_headers).json()["result"]
 
             entity = {
+                "type": "tv",
                 "name": ch_info["broadcast"][0]["channelName"],
                 "current": ch_info["gameTitle"],
                 "category": ch_info["sportsCodeName"],
@@ -49,8 +50,9 @@ class Sporki:
             game_info = requests.get(url, headers=default_headers).json()["result"]
 
             entity = {
+                "type": "live",
                 "name": game_info["broadcast"][0]["channelName"],
-                "current": game_info["gameTitle"],
+                "current": f'[{game_info["leagueCodeName"]}] {game_info["gameTitle"]}',
                 "category": game_info["sportsCodeName"],
                 "url": game_info["broadcast"][0]["channelUrl"],
                 "id": game_info["seq"]
@@ -73,12 +75,20 @@ class Sporki:
         M3U_FORMAT = '#EXTINF:-1 tvg-id=\"{id}\" tvg-name=\"{title}\" group-title=\"{group}\" tvg-chno=\"{ch_no}\" tvh-chnum=\"{ch_no}\",{title}\n{url}\n' 
         m3u = '#EXTM3U\n'
         for idx, item in enumerate(cls.ch_list()):
-            m3u += M3U_FORMAT.format(
-                id=item['id'],
-                title=item['name'],
-                group=item['category'],
-                ch_no=str(idx+1),
-                url=ToolUtil.make_apikey_url(f"/{P.package_name}/api/url.m3u8?ch_id={item['id']}"),
-                # logo= item['logo'],
-            )
+            if item['type'] == 'tv':
+                m3u += M3U_FORMAT.format(
+                    id=item['id'],
+                    title=item['name'],
+                    group=item['category'],
+                    ch_no=str(idx+1),
+                    url=ToolUtil.make_apikey_url(f"/{P.package_name}/api/url.m3u8?ch_id={item['id']}"),
+                )
+            elif item['type'] == 'live':
+                m3u += M3U_FORMAT.format(
+                    id=item['id'],
+                    title=f"{item['current']} ({item['name']})",
+                    group=item['category'],
+                    ch_no=str(idx+1),
+                    url=ToolUtil.make_apikey_url(f"/{P.package_name}/api/url.m3u8?ch_id={item['id']}"),
+                )
         return m3u
