@@ -18,12 +18,12 @@ class Sporki:
                 global_data["result"]["homeDisplay"],
             )
         )[0]["item"]
-        live_data = list(
-            filter(
-                lambda x: x["moduleType"]["code"] == 10,
-                global_data["result"]["homeDisplay"],
-            )
-        )[0]
+        # live_data = list(
+        #     filter(
+        #         lambda x: x["moduleType"]["code"] == 10,
+        #         global_data["result"]["homeDisplay"],
+        #     )
+        # )[0]
 
         for x in tv_data:
             url = (
@@ -41,23 +41,23 @@ class Sporki:
             }
             channels.append(entity)
 
-        live_video = list(
-            filter(lambda x: x["broadcastType"]["code"] == 1 and x["gameStatus"]["code"] == 2, live_data["item"])
-        )
+        # live_video = list(
+        #     filter(lambda x: x["broadcastType"]["code"] == 1 and x["gameStatus"]["code"] == 2, live_data["item"])
+        # )
 
-        for x in live_video:
-            url = f"https://api.sporki.com/sports/v1/{x['sportsCodeValue']}/game/{x['seq']}"
-            game_info = requests.get(url, headers=default_headers).json()["result"]
+        # for x in live_video:
+        #     url = f"https://api.sporki.com/sports/v1/{x['sportsCodeValue']}/game/{x['seq']}"
+        #     game_info = requests.get(url, headers=default_headers).json()["result"]
 
-            entity = {
-                "type": "live",
-                "name": game_info["broadcast"][0]["channelName"],
-                "current": f'[{game_info["leagueCodeName"]}] {game_info["gameTitle"]}',
-                "category": game_info["sportsCodeName"],
-                "url": game_info["broadcast"][0]["channelUrl"],
-                "id": game_info["seq"]
-            }
-            channels.append(entity)
+        #     entity = {
+        #         "type": "live",
+        #         "name": game_info["broadcast"][0]["channelName"],
+        #         "current": f'[{game_info["leagueCodeName"]}] {game_info["gameTitle"]}',
+        #         "category": game_info["sportsCodeName"],
+        #         "url": game_info["broadcast"][0]["channelUrl"],
+        #         "id": game_info["seq"]
+        #     }
+        #     channels.append(entity)
 
         # P.logger.debug(channels)
 
